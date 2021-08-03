@@ -207,7 +207,7 @@ Visualization Manager:
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 1881
+      Max Intensity: 873
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: OusterHCloud
@@ -343,13 +343,13 @@ Visualization Manager:
       Use rainbow: false
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: false
+      Enabled: true
       Marker Topic: /H01/merged_map_markers
       Name: mergedCostOctomap
       Namespaces:
-        {}
+        map: true
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/MarkerArray
       Enabled: false
       Marker Topic: /H01/trav_text_markers
@@ -387,7 +387,8 @@ Visualization Manager:
       Marker Topic: /H01/scan_plan_node/viz_out
       Name: PlannerGraph
       Namespaces:
-        {}
+        tree: true
+        vertices: true
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -475,25 +476,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 10
+      Distance: 5.613118648529053
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: -1.0979743003845215
+        Y: 0.3496772050857544
+        Z: 1.9073486328125e-6
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.810398280620575
+      Pitch: 0.9803987741470337
       Target Frame: H01/base_link
       Value: XYOrbit (rviz)
-      Yaw: 2.860398769378662
+      Yaw: 3.1453990936279297
     Saved: ~
 Window Geometry:
   Displays:
