@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /RobotModel1/Status1
       Splitter Ratio: 0.44999998807907104
     Tree Height: 1194
   - Class: rviz/Selection
@@ -343,13 +342,13 @@ Visualization Manager:
       Use rainbow: false
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /H01/merged_map_markers
       Name: mergedCostOctomap
       Namespaces:
-        map: true
+        {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Class: rviz/MarkerArray
       Enabled: false
       Marker Topic: /H01/trav_text_markers
@@ -387,6 +386,9 @@ Visualization Manager:
       Marker Topic: /H01/scan_plan_node/viz_out
       Name: PlannerGraph
       Namespaces:
+        free_edges: true
+        frontiers: true
+        occupied_edges: true
         tree: true
         vertices: true
       Queue Size: 100
@@ -394,7 +396,7 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
-      Color: 200; 10; 10
+      Color: 170; 0; 255
       Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
@@ -437,7 +439,7 @@ Visualization Manager:
       History Length: 1
       Name: LookaheadPoint
       Radius: 0.20000000298023224
-      Topic: /H01/lookahead_point
+      Topic: /H01/path_follower/lookahead_point
       Unreliable: false
       Value: true
     - Class: rviz/Marker
@@ -476,7 +478,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 5.613118648529053
+      Distance: 6.741279125213623
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -491,10 +493,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9803987741470337
+      Pitch: 0.7997956275939941
       Target Frame: H01/base_link
       Value: XYOrbit (rviz)
-      Yaw: 3.1453990936279297
+      Yaw: 3.1304032802581787
     Saved: ~
 Window Geometry:
   Displays:
@@ -512,5 +514,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 2153
-  X: 64
+  X: 61
   Y: 31
