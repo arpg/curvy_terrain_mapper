@@ -13,7 +13,7 @@
   <arg name="split_size"            default="100000"/> <!-- 100000 -->
   <arg name="num_splits"            default="7"/>
 
-  <node pkg="rosbag" type="record" name="$(arg vehicle)_outputs" if="$(arg record_outputs)" args="--split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_outputs
+  <node pkg="rosbag" type="record" name="$(arg vehicle)_outputs1" if="$(arg record_outputs)" args="--split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_outputs
     /$(arg vehicle)/concatenated_points
     /$(arg vehicle)/terrain_points 
     /$(arg vehicle)/stair_points   
@@ -21,16 +21,16 @@
     /$(arg vehicle)/planned_path
   "/>
 
-  <node pkg="rosbag" type="record" name="$(arg vehicle)_tf_static" if="$(arg record_tfstatic)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_tfstatic
+  <node pkg="rosbag" type="record" name="$(arg vehicle)_tf_static1" if="$(arg record_tfstatic)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_tfstatic
     /tf_static
 
   "/>
 
-  <node pkg="rosbag" type="record" name="$(arg vehicle)_tf" if="$(arg record_tf)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_tf
+  <node pkg="rosbag" type="record" name="$(arg vehicle)_tf1" if="$(arg record_tf)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_tf
     /tf
   "/>
 
-  <node pkg="rosbag" type="record" name="$(arg vehicle)_points" if="$(arg record_points)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_points
+  <node pkg="rosbag" type="record" name="$(arg vehicle)_points1" if="$(arg record_points)" args="record --split --size=$(arg split_size) -o $(arg record_filepath)/$(arg vehicle)_points
     /$(arg vehicle)/horiz/os_cloud_node/points
     /$(arg vehicle)/vert/os_cloud_node/points
 
