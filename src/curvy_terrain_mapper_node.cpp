@@ -189,6 +189,7 @@ public:
         // ROS_INFO("Got input cloud.");
 
         if(!ros::ok()){ return; }
+        if(input_msg.width*input_msg.height < 1){ return; }
         // if(busy){ return; }
         // uint count;
 
