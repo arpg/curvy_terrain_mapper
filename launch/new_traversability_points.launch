@@ -1,0 +1,118 @@
+<launch>
+    <!--
+    [PC1] ->(pcl_proc) - ->[PC1/processed] ->(ctm) ->[PC1/terrain] ->(pcl_concat) ->[terrain] ->(marble_mapping)
+    [PC2] ->(pcl_proc) - ->[PC2/processed] ->(ctm) ->[PC2/terrain] - -^                           ^
+                                          \ \->(pcl_concat) ->[concat] ->(stair_detector) ->[stairs] - - - - - - - - -/
+                                           \- - -^
+    -->
+
+    <arg name="enable_debug"                    default="false"/>
+
+    <arg name="vehicle_name"                    default="D01"/>
+    <arg name="vehicle_type"                    default="Spot"/>
+    <arg name="enable_secondary_points"         default="true" />
+    <arg name="enable_traversability"           default="false"/>
+    <arg name="enable_stairs"                   default="true"/>
+
+    <arg name="fixed_frame_id"                  default="$(arg vehicle_name)/map"/>
+    <arg name="child_frame_id"                  default="$(arg vehicle_name)/horiz_ouster_link"/>
+    <arg name="output_cloud_topic"              default="octomap_out"/>
+    <arg name="octomap_resolution"              default="0.2"/>
+    <arg name="range"                           default="5.0"/>
+
+    <!-- POINTCLOUD-SPECIFIC PREPROCESSING & CURVY TERRAIN MAPPER -->
+    <group ns="horiz/os_cloud_node">
+        <arg name="cloud_topic"         default="points"/>
+        <!-- PREPROCESSING -->
+        <!-- <node pkg="marble_common" type="pcl_processor" name="pcl_processor">
+            <remap from="pcl_preprocessor/points" to="$(arg cloud_topic)"/>
+            <remap from="pcl_preprocessor/pcl_out" to="$(arg cloud_topic)/processed"/>
+        </node> -->
+        <node pkg="topic_tools" type="relay" name="processed_points_relay" args="$(arg cloud_topic) /$(arg vehicle_name)/processed_points/mixed" respawn="true"/>
+        <!-- CURVY TERRAIN MAPPER -->
+        <include file="$(find curvy_terrain_mapper)/launch/curvy_terrain_mapper.launch" if="$(arg enable_traversability)">
+            <arg name="fixed_frame_id"                                  value="$(arg vehicle_name)/horiz_ouster_sensor"/>
+            <arg name="input_cloud_topic"                               value="$(arg cloud_topic)"/>
+            <arg name="cost_norm_cloud_topic"                           value="$(arg cloud_topic)/terrain"/>
+            <arg name="enable_debug"                                    value="$(arg enable_debug)"/>
+            <arg name="config_filepath"                                 value="$(find marble_common)/config/ouster_ctm_config.yaml"/>
+        </include>
+        <node pkg="topic_tools" type="relay" name="terrain_points_relay" args="$(arg cloud_topic)/terrain /$(arg vehicle_name)/terrain_points/mixed" respawn="true" if="$(arg enable_traversability)"/>
+    </group>
+
+    <group ns="spot/depth/frontleft" if="$(arg enable_secondary_points)">
+        <arg name="cloud_topic"             default="points"/>
+        <!-- PREPROCESSING -->
+        <!-- <node pkg="marble_common" type="pcl_processor" name="pcl_processor">
+            <remap from="pcl_processor/points" to="$(arg cloud_topic)"/>
+            <remap from="pcl_processor/pcl_out" to="$(arg cloud_topic)/processed"/>
+        </node> -->
+        <node pkg="topic_tools" type="relay" name="processed_points_relay" args="$(arg cloud_topic)_processed /$(arg vehicle_name)/processed_points/mixed" respawn="true"/>
+        <!-- CURVY TERRAIN MAPPER -->
+        <include file="$(find curvy_terrain_mapper)/launch/curvy_terrain_mapper.launch" if="$(arg enable_traversability)">
+            <arg name="fixed_frame_id"                                  value="$(arg vehicle_name)/frontleft"/>
+            <arg name="input_cloud_topic"                               value="$(arg cloud_topic)_processed"/>
+            <arg name="cost_norm_cloud_topic"                           value="$(arg cloud_topic)/terrain"/>
+            <arg name="enable_debug"                                    value="$(arg enable_debug)"/>
+            <arg name="config_filepath"                                 value="$(find marble_common)/config/realsense_ctm_config.yaml"/>
+        </include>
+        <node pkg="topic_tools" type="relay" name="terrain_points_relay" args="$(arg cloud_topic)/terrain /$(arg vehicle_name)/terrain_points/mixed" respawn="true" if="$(arg enable_traversability)"/>
+    </group>
+
+    <group ns="spot/depth/frontright" if="$(arg enable_secondary_points)">
+        <arg name="cloud_topic"         default="points"/>
+        <!-- PREPROCESSING -->
+        <!-- <node pkg="marble_common" type="pcl_processor" name="pcl_processor">
+            <remap from="pcl_processor/points" to="$(arg cloud_topic)"/>
+            <remap from="pcl_processor/pcl_out" to="$(arg cloud_topic)/processed"/>
+        </node> -->
+        <node pkg="topic_tools" type="relay" name="processed_points_relay" args="$(arg cloud_topic)_processed /$(arg vehicle_name)/processed_points/mixed" respawn="true"/>
+        <!-- CURVY TERRAIN MAPPER -->
+        <include file="$(find curvy_terrain_mapper)/launch/curvy_terrain_mapper.launch" if="$(arg enable_traversability)">
+            <arg name="fixed_frame_id"                                  value="$(arg vehicle_name)/frontright"/>
+            <arg name="input_cloud_topic"                               value="$(arg cloud_topic)_processed"/>
+            <arg name="cost_norm_cloud_topic"                           value="$(arg cloud_topic)/terrain"/>
+            <arg name="enable_debug"                                    value="$(arg enable_debug)"/>
+            <arg name="config_filepath"                                 value="$(find marble_common)/config/realsense_ctm_config.yaml"/>
+        </include>
+        <node pkg="topic_tools" type="relay" name="terrain_points_relay" args="$(arg cloud_topic)/terrain /$(arg vehicle_name)/terrain_points/mixed" respawn="true" if="$(arg enable_traversability)"/>
+    </group>
+
+    <!-- CURVY TERRAIN MAPPER CONCAT -->
+    <group if="$(arg enable_traversability)">
+    <node pkg="marble_common" name="terrain_points_concat_node" type="pcl_concat_int" output="screen">
+        <remap from="pcl_concat_int/points_in" to="/$(arg vehicle_name)/terrain_points/mixed"/>
+        <remap from="pcl_concat_int/pcl_out" to="/$(arg vehicle_name)/terrain_points"/>
+        <param name="loop_rate"            value="10"/>
+        <param name="pcl_out_frame"        value="$(arg vehicle_name)/base_link" />
+        <param name="publish_unfiltered_pcl"                      value="false" />
+        <param name="enable_distance_filter"                      value="true" />
+        <param name="enable_passthrough_filter"                   value="true" />
+        <param name="enable_radius_outlier_removal_filter"        value="true" />
+        <rosparam command="load" file="$(find marble_common)/config/$(arg vehicle_type)_pcl_concat.yaml" subst_value="true"/>
+    </node>
+    <!-- <node pkg="topic_tools" type="relay" name="no_concat_relay" args="/$(arg vehicle_name)/terrain_points/mixed /$(arg vehicle_name)/terrain_points" respawn="true" if="$(eval not enable_secondary_points)"/> -->
+    </group>
+
+    <!-- PROC CONCAT & STAIR DETECTION -->
+    <node pkg="marble_common" name="concatenated_points_concat_node" type="pcl_concat" output="screen">
+        <remap from="pcl_concat/points_in" to="/$(arg vehicle_name)/processed_points/mixed"/>
+        <remap from="pcl_concat/pcl_out" to="/$(arg vehicle_name)/concatenated_points"/>
+        <remap from="pcl_concat/pcl2_out" to="/$(arg vehicle_name)/concatenated_points2"/>
+        <param name="loop_rate"            value="10"/>
+        <param name="pcl_out_frame"        value="/$(arg vehicle_name)/base_link" />
+        <param name="publish_unfiltered_pcl"                      value="false" />
+        <param name="enable_distance_filter"                      value="true" />
+        <param name="enable_passthrough_filter"                   value="true" />
+        <param name="enable_radius_outlier_removal_filter"        value="true" />
+        <rosparam command="load" file="$(find marble_common)/config/$(arg vehicle_type)_pcl_concat_stairs.yaml" subst_value="true"/>
+    </node>
+
+    <include file="$(find stair_detection)/launch/stair_detection.launch" if="$(arg enable_stairs)">
+        <arg name="config_filepath" value="$(find marble_common)/config/$(arg vehicle_type)_stairs_config.yaml"/>
+        <arg name="fixed_frame_id" value="$(arg vehicle_name)/base_link"/>
+        <arg name="input_cloud_topic" value="/$(arg vehicle_name)/concatenated_points"/>
+        <arg name="output_cloud_topic" value="/$(arg vehicle_name)/stair_points"/>
+    </include>
+
+</launch>

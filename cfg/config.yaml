@@ -1,0 +1,69 @@
+preanalysis:
+  # Set if downsample active
+  dsFlag: True
+  # Set downsample resolution
+  dsResolution: 0.05
+  # Normal estimation - find N neareast neighbors (:=0) - find points within distance (:=1)
+  neNeighMethod: 0
+  neSearchNeighbours: 24
+  neSearchRadius: 0.2
+  # Ghost point filter active?
+  gpFlag: False
+  # Ghost point filter angle in degress
+  # gpAngle: 10.0
+  gpAngle: 25.0
+  # gpAngle: 45.0
+  # gpAngle: 5.0
+  # Point normal filter active?
+  pfActive: False
+  # Point normal filter angle in degress
+  pfAngle: 20.0
+  # Floor seperation active?
+  fsActive: False
+  # Floor seperation angle in degrees
+  fsAngle: 30.0
+  # Floor seperation distance
+  fsRange: 0.15
+  # Set the position of the LIDAR (required for floor separation)
+  rob_x: 0.00
+  rob_y: 0.00
+  rob_z: -0.5
+  # Rotate pointcloud around z-axis
+  robAngle: 0
+  # Downsample method - Standard: flase - Experimental version: true
+  dsMethod: False
+  # Process ghost point filter and floor separation in separate steps
+  neMethod: 0
+segmentationmode: 0
+regiongrowing:
+  enable: False
+  # Minimum cluster size
+  minClustSize: 30
+  # Number of neighbors
+  noNeigh: 24
+  # Smoothness flag (true: compare to seed point false: compare to neighboring point)
+  smoothFlag: True
+  # Smoothness threshold
+  # smoothThresh: 50.0
+  smoothThresh: 30.0
+  # Residual flag (true: compare to seed point false: compare to neighboring point)
+  resFlag: True
+  # Residual distance
+  resThresh: 0.08
+  # Curvature flag
+  curvFlag: False
+  # Curvature threshold
+  curvThresh: 0.1
+  # Update seed point during growing
+  updateFlag: True
+  # Update pointwise
+  pointUpdateFlag: True
+  # If not pointwise, update every:
+  updateInterval: 100
+costmap:
+  normal_gain: 20.0
+  curv_gain: 2.0
+  min_saturation_cost: 0.0
+  max_saturation_cost: 0.5
+  set_min_saturation_cost_to_min_cost: False
+  set_max_saturation_cost_to_max_cost: False
