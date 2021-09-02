@@ -41,7 +41,7 @@ generate_dynamic_reconfigure_options(
 #)
 
 catkin_package(
-  CATKIN_DEPENDS roscpp 
+  CATKIN_DEPENDS roscpp
   )
 
 include_directories(
@@ -57,21 +57,21 @@ add_definitions (${PCL_DEFINITIONS})
 
 add_executable( curvy_terrain_mapper_node
   src/curvy_terrain_mapper_node.cpp
-  src/preanalysis.cpp 
-  src/regions.cpp 
-  src/segmentPatch.cpp 
-  src/regiongrowing.cpp 
-  src/voxSAC.cpp 
-  src/splitmerge.cpp 
-  src/planeshape.cpp 
-  src/Stairs.cpp 
-  src/StairVector.cpp 
+  src/preanalysis.cpp
+  src/regions.cpp
+  src/segmentPatch.cpp
+  src/regiongrowing.cpp
+  src/voxSAC.cpp
+  src/splitmerge.cpp
+  src/planeshape.cpp
+  src/Stairs.cpp
+  src/StairVector.cpp
   src/recognition.cpp
   src/prediction.cpp
 )
 add_dependencies( curvy_terrain_mapper_node
   curvy_terrain_mapper_gencfg
-  curvy_terrain_mapper_gencpp
+  #scurvy_terrain_mapper_gencpp
 )
 target_link_libraries( curvy_terrain_mapper_node
   ${catkin_LIBRARIES}
